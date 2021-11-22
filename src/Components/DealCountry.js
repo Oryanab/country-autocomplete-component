@@ -7,7 +7,13 @@ export default function DealCountry({
 }) {
   return (
     <option
-      style={{ cursor: "pointer" }}
+      style={{
+        cursor: "pointer",
+        margin: "2px",
+        backgroundColor: "yellowgreen",
+        width: "210px",
+        fontSize: "12px",
+      }}
       onClick={() => {
         getinputState(country.label);
         changdivDisplayState("none");
