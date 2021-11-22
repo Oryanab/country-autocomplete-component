@@ -18,6 +18,7 @@ function SearchBar({ allCounties }) {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [divState, changedivState] = useState("none");
   const [showCancel, changeCancel] = useState("none");
+  const [inputValue, changeInputValue] = useState("");
   const inputEl = useRef(null);
 
   useEffect(() => {
@@ -26,6 +27,10 @@ function SearchBar({ allCounties }) {
       inputEl.current.value = selectedCountry;
     }
   }, [selectedCountry]);
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   return (
     <div>
@@ -40,6 +45,10 @@ function SearchBar({ allCounties }) {
             ? changedivState("block")
             : changedivState("none");
         }}
+        onChange={() => {
+          changeInputValue(capitalizeFirstLetter(inputEl.current.value));
+        }}
+        autocomplete="off"
       />
       <button
         onClick={() => {
@@ -64,6 +73,8 @@ function SearchBar({ allCounties }) {
         divDisplay={divState}
         inputState={setSelectedCountry}
         divDisplayState={changedivState}
+        currentInputValue={inputValue}
+        resetInputValue={changeInputValue}
       />
     </div>
   );
@@ -74,28 +85,39 @@ function OptionsDropdown({
   divDisplay,
   inputState,
   divDisplayState,
+  currentInputValue,
+  resetInputValue,
 }) {
   return (
     <div style={{ display: divDisplay }}>
       {allCounties.map((coutry) => {
-        return (
-          <DealCountry
-            country={coutry}
-            getinputState={inputState}
-            changdivDisplayState={divDisplayState}
-          />
-        );
+        if (coutry.label.includes(currentInputValue)) {
+          return (
+            <DealCountry
+              country={coutry}
+              getinputState={inputState}
+              changdivDisplayState={divDisplayState}
+              resetInputValue={resetInputValue}
+            />
+          );
+        }
       })}
     </div>
   );
 }
 
-function DealCountry({ country, getinputState, changdivDisplayState }) {
+function DealCountry({
+  country,
+  getinputState,
+  changdivDisplayState,
+  resetInputValue,
+}) {
   return (
     <option
       onClick={() => {
         getinputState(country.label);
         changdivDisplayState("none");
+        resetInputValue("");
       }}
       key={country.code}
       value={country.label}
