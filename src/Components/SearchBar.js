@@ -1,20 +1,7 @@
-import "./App.css";
 import react, { useState, useRef, useEffect, Component } from "react";
+import OptionsDropdown from "./OptionsDropdown";
 
-export class App extends Component {
-  render() {
-    return (
-      <>
-        <div>
-          <h1>Choose A country:</h1>
-          <SearchBar />
-        </div>
-      </>
-    );
-  }
-}
-
-function SearchBar({ allCounties }) {
+export default function SearchBar({ allCounties }) {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [divState, changedivState] = useState("none");
   const [showCancel, changeCancel] = useState("none");
@@ -46,7 +33,13 @@ function SearchBar({ allCounties }) {
             : changedivState("none");
         }}
         onChange={() => {
+          divState === "none"
+            ? changedivState("block")
+            : changedivState("none");
           changeInputValue(capitalizeFirstLetter(inputEl.current.value));
+          if (inputEl.current.value.length < 1) {
+            changeCancel("none");
+          }
         }}
         autocomplete="off"
       />
@@ -77,53 +70,6 @@ function SearchBar({ allCounties }) {
         resetInputValue={changeInputValue}
       />
     </div>
-  );
-}
-
-function OptionsDropdown({
-  allCounties,
-  divDisplay,
-  inputState,
-  divDisplayState,
-  currentInputValue,
-  resetInputValue,
-}) {
-  return (
-    <div style={{ display: divDisplay }}>
-      {allCounties.map((coutry) => {
-        if (coutry.label.includes(currentInputValue)) {
-          return (
-            <DealCountry
-              country={coutry}
-              getinputState={inputState}
-              changdivDisplayState={divDisplayState}
-              resetInputValue={resetInputValue}
-            />
-          );
-        }
-      })}
-    </div>
-  );
-}
-
-function DealCountry({
-  country,
-  getinputState,
-  changdivDisplayState,
-  resetInputValue,
-}) {
-  return (
-    <option
-      onClick={() => {
-        getinputState(country.label);
-        changdivDisplayState("none");
-        resetInputValue("");
-      }}
-      key={country.code}
-      value={country.label}
-    >
-      {country.label}-{country.code}-{country.phone}
-    </option>
   );
 }
 
@@ -551,4 +497,3 @@ const countries = [
   { code: "ZM", label: "Zambia", phone: "260" },
   { code: "ZW", label: "Zimbabwe", phone: "263" },
 ];
-export default App;
